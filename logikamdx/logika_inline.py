@@ -28,8 +28,6 @@ class LogikaInlinePattern(Pattern):
         tag = self._get_tag(m.group(2))
 
         if tag == "":
-            print("no tag :(")
-            print(m.group(2) + m.group(3) + m.group(2))
             return m.group(2) + m.group(3) + m.group(2)
 
         # Create the Element

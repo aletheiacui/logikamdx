@@ -284,8 +284,7 @@ class LogikaTableExtension(Extension):
         """ Add an instance of LogikaTableProcessor to BlockParser. """
         if '|' not in md.ESCAPED_CHARS:
             md.ESCAPED_CHARS.append('|')
-        md.parser.blockprocessors.register(LogikaTableProcessor(md.parser), 'table', 75)
-
+        md.parser.blockprocessors.register(LogikaTableProcessor(md.parser), 'logika_table', 75)
 
 def makeExtension(**kwargs): 
     return LogikaTableExtension(**kwargs)
