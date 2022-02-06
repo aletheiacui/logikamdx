@@ -19,8 +19,8 @@ import re
 # ++ ins
 # -- del
 
-LOGIKA_INLINE_RE = r'([\*\_\-\+]{2}|[\*\_]{1})(.*?)\2'
-LOGIKA_INLINE_RE_ = r'^([\*\_\-\+]{2}|[\*\_]{1})(.*?)\1$'
+LOGIKA_INLINE_RE = r'(\*{1,2}|\_{1,2}|\-{2}|\+{2})(.+?)\2'
+LOGIKA_INLINE_RE_ = r'^(\*{1,2}|\_{1,2}|\-{2}|\+{2})(.+?)\1$'
 
 class LogikaInlinePattern(Pattern):
 
@@ -28,6 +28,8 @@ class LogikaInlinePattern(Pattern):
         tag = self._get_tag(m.group(2))
 
         if tag == "":
+            print("no tag :(")
+            print(m.group(2) + m.group(3) + m.group(2))
             return m.group(2) + m.group(3) + m.group(2)
 
         # Create the Element

@@ -22,8 +22,7 @@ PIPE_NONE = 0
 PIPE_LEFT = 1
 PIPE_RIGHT = 2
 
-
-class TableProcessor(BlockProcessor):
+class LogikaTableProcessor(BlockProcessor):
     """ Process Tables. """
 
     RE_CODE_PIPES = re.compile(r'(?:(\\\\)|(\\`+)|(`+)|(\\\|)|(\|))')
@@ -282,10 +281,10 @@ class LogikaTableExtension(Extension):
     """ Add tables to Markdown. """
 
     def extendMarkdown(self, md):
-        """ Add an instance of TableProcessor to BlockParser. """
+        """ Add an instance of LogikaTableProcessor to BlockParser. """
         if '|' not in md.ESCAPED_CHARS:
             md.ESCAPED_CHARS.append('|')
-        md.parser.blockprocessors.register(TableProcessor(md.parser), 'table', 75)
+        md.parser.blockprocessors.register(LogikaTableProcessor(md.parser), 'table', 75)
 
 
 def makeExtension(**kwargs): 
