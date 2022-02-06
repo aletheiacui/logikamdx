@@ -4,8 +4,8 @@ Logika Extension for Python-Markdown
 
 import markdown
 
-extensions = ['logika_inline',
-              'logika_table',
+extensions = ['logikamdx.logika_inline',
+              'logikamdx.logika_table',
               ]
               
 
