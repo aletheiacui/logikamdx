@@ -16,11 +16,11 @@ import re
 
 # **, __ strong
 # *, _ em
-# +, ++ ins
-# -, -- del
+# ++ ins
+# -- del
 
-LOGIKA_INLINE_RE = r'([\*_\-\+]{2}|[\*_\-\+]{1})(.*?)\2'
-LOGIKA_INLINE_RE_ = r'^([\*_\-\+]{2}|[\*_\-\+]{1})(.*?)\1$'
+LOGIKA_INLINE_RE = r'([\*\_\-\+]{2}|[\*\_]{1})(.*?)\2'
+LOGIKA_INLINE_RE_ = r'^([\*\_\-\+]{2}|[\*\_]{1})(.*?)\1$'
 
 class LogikaInlinePattern(Pattern):
 
@@ -41,7 +41,6 @@ class LogikaInlinePattern(Pattern):
             if tag == "" or tag == el.tag:
                 el.text = m.group(3)
                 return el
-            print(el)
             subtree = etree.SubElement(el, tag)
             subtree.text = inner_m.group(2)
 
@@ -56,10 +55,10 @@ class LogikaInlinePattern(Pattern):
         elif pattern == '*' or pattern == '_':
             # italics
             tag = 'em'
-        elif pattern == '++' or pattern == '+':
+        elif pattern == '++':
             # Underline
             tag = 'ins'        
-        elif pattern == '--' or pattern == '-':
+        elif pattern == '--':
             # Strike
             tag = 'del'
         
