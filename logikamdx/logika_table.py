@@ -27,10 +27,10 @@ class LogikaTableProcessor(BlockProcessor):
 
     RE_CODE_PIPES = re.compile(r'(?:(\\\\)|(\\`+)|(`+)|(\\\|)|(\|))')
     RE_END_BORDER = re.compile(r'(?<!\\)(?:\\\\)*\|$')
-    RE_BORDER = re.compile(r'(?<!\\)([-]{10,})(\:[0-9]{1,3})?$')
+    RE_BORDER = re.compile(r'(?<!\\)([\=]{5,})(\:\d{1,3})?$')
     RE_TITLE = re.compile(r'(?<!\\)(\:)(.+)(\:)$')
-    RE_SEPARATOR = re.compile(r'(?<!\\)(\|?(\-{3,})(\:\d{1,3})?(\:\S+)?\|?){2,}')
-    RE_SEP_CELL = re.compile(r'(?:\-{3,})(\:\d{1,3})?(\:\S+)?')
+    RE_SEPARATOR = re.compile(r'(?<!\\)(\|?(\={3,})(\:\d{1,3})?(\:\S+)?\|?){2,}')
+    RE_SEP_CELL = re.compile(r'(?:\={3,})(\:\d{1,3})?(\:\S+)?')
 
     def __init__(self, parser):
         self.border = False
