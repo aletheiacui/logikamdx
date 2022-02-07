@@ -29,10 +29,7 @@ class LogikaInlinePattern(Pattern):
 
         if tag == "":
             return m.group(2) + m.group(3) + m.group(2)
-        print(m.group(3))
         inner_m = LOGIKA_INLINE_RE_.match(m.group(3))
-        if inner_m:
-            print(inner_m.groups())
 
         # Create the Element
         if "," in tag:
