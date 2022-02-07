@@ -135,7 +135,7 @@ class LogikaTableProcessor(BlockProcessor):
             sep_match = self.RE_SEP_CELL.match(c.strip())
             cstyle = ""
             if sep_match.group(1):
-                cstyle += f"width:{sep_match.group(1)[1:]};"
+                cstyle += f"width:{sep_match.group(1)[1:]}%;"
             if sep_match.group(2):
                 cstyle += f"align:{sep_match.group(2)[1:]};"
             style.append(cstyle)
