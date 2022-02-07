@@ -48,6 +48,14 @@ class LogikaTableProcessor(BlockProcessor):
         Check for title and caption
         Check the table has at least two columns
         """
+        self.border = False
+        self.separator = None
+        self.title = None
+        self.caption = None
+        self.table_width = "100"
+        self.top_border = False
+        self.is_table = True
+        
         rows = [row.strip() for row in block.split('\n')]
         # a minimal table should have three rows:
         #   1. a top border or a top separator
