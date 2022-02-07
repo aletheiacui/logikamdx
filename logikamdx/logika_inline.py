@@ -12,6 +12,7 @@ License: [BSD](https://opensource.org/licenses/bsd-license.php)
 from markdown.inlinepatterns import Pattern
 from markdown.extensions import Extension
 import xml.etree.ElementTree as etree
+from markdown.util import AtomicString
 import re
 
 # **, __ strong
@@ -25,10 +26,17 @@ LOGIKA_INLINE_RE_ = re.compile(r'(.*?)(\*{3}|\*{2}|\*{1}|\_{3}|\_{2}|\_{1}|\-{2}
 class LogikaInlinePattern(Pattern):
 
     def handleMatch(self, m):
+        if "_" in m.group(2):
+            if re.match(r'^\_*$', m.group(3)):
+                el = etree.Element("span")
+                el.text = AtomicString(m.group(2) + m.group(3) + m.group(2))
+                return el
+
         tag = self._get_tag(m.group(2))
 
         if tag == "":
             return m.group(2) + m.group(3) + m.group(2)
+            
         inner_m = LOGIKA_INLINE_RE_.match(m.group(3))
 
         # Create the Element
