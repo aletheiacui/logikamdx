@@ -20,7 +20,7 @@ import re
 # -- del
 
 LOGIKA_INLINE_RE = r'(\*{3}|\*{2}|\*{1}|\_{3}|\_{2}|\_{1}|\-{2}|\+{2})(.+?)\2'
-LOGIKA_INLINE_RE_ = re.compile(r'(.*?)(\*{3}|\*{2}|\*{1}|\_{3}|\_{2}|\_{1}|\-{2}|\+{2})(.+?)\2(.*?)')
+LOGIKA_INLINE_RE_ = re.compile(r'(.*?)(\*{3}|\*{2}|\*{1}|\_{3}|\_{2}|\_{1}|\-{2}|\+{2})(.+?)\2(.*)')
 
 class LogikaInlinePattern(Pattern):
 
@@ -50,9 +50,9 @@ class LogikaInlinePattern(Pattern):
             el.text = m.group(3)
             return el
         el.text = inner_m.group(1)
-        el.tail = inner_m.group(4)
         subtree = etree.SubElement(el, tag)
         subtree.text = inner_m.group(3)
+        subtree.tail = inner_m.group(4)
         return el
 
     def _get_tag(self, pattern):
