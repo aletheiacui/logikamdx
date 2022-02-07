@@ -137,7 +137,7 @@ class LogikaTableProcessor(BlockProcessor):
             if sep_match.group(1):
                 cstyle += f"width:{sep_match.group(1)[1:]}%;"
             if sep_match.group(2):
-                cstyle += f"align:{sep_match.group(2)[1:]};"
+                cstyle += f"text-align:{sep_match.group(2)[1:]};"
             style.append(cstyle)
 
         # Build table
