@@ -202,6 +202,8 @@ class LogikaTableProcessor(BlockProcessor):
 
             c = etree.SubElement(tr, tag)
             c.text = cell_text
+            if tag == "td":
+                c.set('class', f'table-col-{str(i)}')
             if a:
                 c.set('style', style[i])
 
