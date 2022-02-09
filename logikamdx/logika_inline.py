@@ -16,7 +16,7 @@ import re
 # ++ ins
 # -- del
 
-LOGIKA_INLINE_RE = r'(\-{2}|\+{2})(.+?)\2'
+LOGIKA_INLINE_RE = r'(?<!\s[\<\>])(\-{2}|\+{2})(?![\<\>]\s)(.+?)\2'
 
 class LogikaInlinePattern(Pattern):
     def handleMatch(self, m):
