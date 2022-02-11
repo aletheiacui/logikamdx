@@ -28,9 +28,10 @@ class LogikaTableProcessor(BlockProcessor):
     RE_CODE_PIPES = re.compile(r'(?:(\\\\)|(\\`+)|(`+)|(\\\|)|(\|))')
     RE_END_BORDER = re.compile(r'(?<!\\)(?:\\\\)*\|$')
     RE_BORDER = re.compile(r'(?<!\\)([\=]{5,})(\:\d{1,3})?$')
-    RE_TITLE = re.compile(r'(?<!\\)(\:)(.+)(\:)$')
-    RE_SEPARATOR = re.compile(r'(?<!\\)(\|?(\={3,})(\:\d{1,3})?(\:\S+)?\|?){2,}')
+    RE_TITLE = re.compile(r'(?<!\\)(\:)(.+)(\:)?$')
+    RE_SEPARATOR = re.compile(r'(?<!\\)(\|?(\s*\={3,}\s*)(\:\d{1,3})?(\:\S+)?\s*\|?){2,}')
     RE_SEP_CELL = re.compile(r'(?:\={3,})(\:\d{1,3})?(\:\S+)?')
+    RE_ADJUST = re.compile(r"^(.+):(\-?\d{1,3}?)$")
 
     def __init__(self, parser):
         self.border = False
@@ -39,6 +40,7 @@ class LogikaTableProcessor(BlockProcessor):
         self.caption = None
         self.table_width = "100"
         self.top_border = False
+        self.bottom_border = False
         self.is_table = True
         super().__init__(parser)
 
@@ -54,6 +56,7 @@ class LogikaTableProcessor(BlockProcessor):
         self.caption = None
         self.table_width = "100"
         self.top_border = False
+        self.bottom_border = False
         self.is_table = True
         
         rows = [row.strip() for row in block.split('\n')]
@@ -85,14 +88,14 @@ class LogikaTableProcessor(BlockProcessor):
             return False
 
         # get bottom border
-        bottom_border = rows.pop()
+        bottom_border = rows[-1]
         bottom_match = self.RE_BORDER.match(bottom_border)
-        if not bottom_match:
-            # missing bottom border
-            return False
+        if bottom_match:
+            rows = rows[:-1]
+            self.bottom_border = True
 
         # if top and bottom borders have been found
-        if (top_match or sep_match) and bottom_match:
+        if top_match or sep_match:
             # find title, if exists
             title_match = self.RE_TITLE.match(rows[0])
 
@@ -130,9 +133,11 @@ class LogikaTableProcessor(BlockProcessor):
     def run(self, parent, blocks):
         # Get default alignment of columns
         block = blocks.pop(0).split('\n')
-        rows = [] if len(block) < 3 else block[1:-1]
+        rows = [] if len(block) < 3 else block[1:]
         if self.top_border:
             rows = rows[1:]
+        if self.bottom_border:
+            rows = rows[:-1]
         if self.title:
             rows = rows[1:]
         if self.caption:
@@ -163,8 +168,8 @@ class LogikaTableProcessor(BlockProcessor):
                 # Handle empty table
                 self._build_empty_row(table, style)
             else:
-                for row in rows:
-                    self._build_row(row.strip(), table, style)
+                for r, row in enumerate(rows):
+                    self._build_row(row.strip(), table, style ,r)
         else:
             subdiv = etree.SubElement(table_div, 'div')
             subdiv.set("class", "logika-content-div")
@@ -178,14 +183,16 @@ class LogikaTableProcessor(BlockProcessor):
     def _build_empty_row(self, parent, align):
         """Build an empty row."""
         tr = etree.SubElement(parent, 'tr')
+        tr.set("class", "row-0")
         count = len(align)
         while count:
             etree.SubElement(tr, 'td')
             count -= 1
 
-    def _build_row(self, row, parent, style):
+    def _build_row(self, row, parent, style, row_number):
         """ Given a row of text, build table cells. """
         tr = etree.SubElement(parent, 'tr')
+        tr.set("class", f"row-{row_number}")
         cells = self._split_row(row)
         # We use align here rather than cells to ensure every row
         # contains the same number of columns.
@@ -199,13 +206,20 @@ class LogikaTableProcessor(BlockProcessor):
                 if cell_text.startswith("!"):
                     tag = "th"
                     cell_text = cell_text[1:]
-
+            
+            padding_match = self.RE_ADJUST.match(cell_text)
+            padding = ""
+            if padding_match:
+                cell_text = padding_match.group(1)
+                padding = f"padding-left:{padding_match.group(2)}px;"
+                style[i] = style[i] + padding
             c = etree.SubElement(tr, tag)
             c.text = cell_text
-            if tag == "td":
-                c.set('class', f'table-col-{str(i)}')
+            c.set('class', f'col-{str(i)}')
             if a:
                 c.set('style', style[i])
+            elif padding_match:
+                c.set('style', padding)
 
     def _split_row(self, row):
         """ split a row of text into list of cells. """
