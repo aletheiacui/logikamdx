@@ -212,12 +212,12 @@ class LogikaTableProcessor(BlockProcessor):
             if padding_match:
                 cell_text = padding_match.group(1)
                 padding = f"padding-left:{padding_match.group(2)}px;"
-                style[i] = style[i] + padding
+
             c = etree.SubElement(tr, tag)
             c.text = cell_text
             c.set('class', f'col-{str(i)}')
             if a:
-                c.set('style', style[i])
+                c.set('style', style[i] + padding)
             elif padding_match:
                 c.set('style', padding)
 
