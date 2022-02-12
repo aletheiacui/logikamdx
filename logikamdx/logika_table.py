@@ -27,7 +27,7 @@ class LogikaTableProcessor(BlockProcessor):
 
     RE_CODE_PIPES = re.compile(r'(?:(\\\\)|(\\`+)|(`+)|(\\\|)|(\|))')
     RE_END_BORDER = re.compile(r'(?<!\\)(?:\\\\)*\|$')
-    RE_BORDER = re.compile(r'(?<!\\)([\=]{5,})(\:\d{1,3})?$')
+    RE_BORDER = re.compile(r'(?<!\\)([\=]{5,})(\:\d{1,3})?(\:\S+)?$')
     RE_TITLE = re.compile(r'(?<!\\)(\:)(.+)(\:)?$')
     RE_SEPARATOR = re.compile(r'(?<!\\)(\|?(\s*\={3,}\s*)(\:\d{1,3})?(\:\S+)?\s*\|?){2,}')
     RE_SEP_CELL = re.compile(r'(?:\={3,})(\:\d{1,3})?(\:\S+)?')
@@ -53,6 +53,7 @@ class LogikaTableProcessor(BlockProcessor):
         self.border = False
         self.separator = None
         self.title = None
+        self.table_class = None
         self.caption = None
         self.table_width = "100"
         self.top_border = False
@@ -76,6 +77,8 @@ class LogikaTableProcessor(BlockProcessor):
         if top_match: 
             if top_match.group(2):
                 self.table_width = top_match.group(2).strip(":")
+            if top_match.group(3):
+                self.table_class = top_match.group(3).strip(":")
             self.top_border = True
         elif not top_match and sep_match:
             self.border = PIPE_NONE
@@ -157,6 +160,9 @@ class LogikaTableProcessor(BlockProcessor):
         table_div = etree.SubElement(parent, 'div')
         if self.table_width:
             table_div.set('style', f'width:{self.table_width}%')
+        if self.table_class:
+            table_div.set('class', f'logika-div {self.table_class}')
+        else:
             table_div.set('class', 'logika-div')
 
         if self.title:
