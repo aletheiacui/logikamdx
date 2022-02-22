@@ -5,9 +5,9 @@ Logika Extension for Python-Markdown
 import markdown
 
 extensions = ['logikamdx.logika_table',
-'logikamdx.logika_inline',]
+'logikamdx.logika_inline',
+'logikamdx.logika_lists']
               
-
 class LogikaExtension(markdown.Extension):
     """ Add Logika extensions to Markdown class."""
 
