@@ -47,7 +47,7 @@ class LogikaOListProcessor(OListProcessor):
 
     def __init__(self, parser):
         super().__init__(parser)
-        self.list_style = "style:decimal;"
+        self.list_style = "list-style-type:decimal;"
 
         self.LOGIKA_INDENT_RE = re.compile(r'^[ ]{%d,%d}((\d+\.)|([a-z]+\.)|([A-Z]+\.)|[*+-])[ ]+.*' % (self.tab_length, self.tab_length * 2 - 1))
         self.STARTSWITH_RE = re.compile(r'(\d+)')
@@ -146,7 +146,7 @@ class LogikaOListProcessor(OListProcessor):
 class LowerAlphaListProcessor(LogikaOListProcessor):
     def __init__(self, parser):
         super().__init__(parser)
-        self.list_style = "style:lower-alpha;"
+        self.list_style = "list-style-type:lower-alpha;"
         self.STARTSWITH_RE = re.compile(r'([a-z]+)')
         self.RE = re.compile(r'^[ ]{0,%d}[a-z]+\.[ ]+(.*)' % (self.tab_length - 1))
         # Detect items on secondary lines. they can be of either list type.
@@ -161,7 +161,7 @@ class LowerAlphaListProcessor(LogikaOListProcessor):
 class UpperAlphaListProcessor(LogikaOListProcessor):
     def __init__(self, parser):
         super().__init__(parser)
-        self.list_style = "style:upper-alpha;"
+        self.list_style = "list-style-type:upper-alpha;"
         self.STARTSWITH_RE = re.compile(r'([A-Z]+)')
         self.RE = re.compile(r'^[ ]{0,%d}[A-Z]+\.[ ]+(.*)' % (self.tab_length - 1))
         # Detect items on secondary lines. they can be of either list type.
