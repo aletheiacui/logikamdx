@@ -6,7 +6,8 @@ import markdown
 
 extensions = ['logikamdx.logika_table',
 'logikamdx.logika_inline',
-'logikamdx.logika_lists']
+'logikamdx.logika_lists',
+'logikamdx.logika_define']
               
 class LogikaExtension(markdown.Extension):
     """ Add Logika extensions to Markdown class."""
