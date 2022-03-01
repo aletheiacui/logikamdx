@@ -19,6 +19,8 @@ class LogikaDefinePattern(InlineProcessor):
             wordform = m.group(4)
         else:
             wordform = re.sub(r'<.+?>', '', m.group(2))
+            wordform = re.sub(r'\-{2}|\+{2}|\*|\_', '', wordform)
+            
         el.set("name", wordform)
         el.set("class", "define-wordform")
         el.text = m.group(2)
