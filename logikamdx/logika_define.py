@@ -29,7 +29,7 @@ class LogikaDefinePattern(InlineProcessor):
 class LogikaDefineExtension(Extension):
     def extendMarkdown(self, md):
         # Add new patterns
-        DEFINE_PATTERN = r'(\{(.+?)\})(\((.+)\))?'
+        DEFINE_PATTERN = r'(\{(?!\:)(.+?)\})(\((.+)\))?'
         md.inlinePatterns.register(LogikaDefinePattern(DEFINE_PATTERN, md), 'logika_define', 170)
 
 
