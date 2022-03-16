@@ -20,29 +20,7 @@ import xml.etree.ElementTree as etree
 from markdown.blockprocessors import OListProcessor, UListProcessor
 from markdown.extensions import Extension
 
-class SaneOListProcessor(OListProcessor):
-
-    SIBLING_TAGS = ['ol']
-    LAZY_OL = False
-
-    def __init__(self, parser):
-        super().__init__(parser)
-        self.CHILD_RE = re.compile(r'^[ ]{0,%d}((\d+\.))[ ]+(.*)' %
-                                   (self.tab_length - 1))
-    
-
-class LogikaUListProcessor(UListProcessor):
-
-    SIBLING_TAGS = ['ul']
-
-    def __init__(self, parser):
-        super().__init__(parser)
-        self.CHILD_RE = re.compile(r'^[ ]{0,%d}(([*+-]))[ ]+(.*)' %
-                                   (self.tab_length - 1))
-
-
 class LogikaOListProcessor(OListProcessor):
-    SIBLING_TAGS = ['ol']
     LAZY_OL = False
 
     def __init__(self, parser):
@@ -56,7 +34,7 @@ class LogikaOListProcessor(OListProcessor):
         # Check fr multiple items in one block.
         items = self.get_items(blocks.pop(0))
         sibling = self.lastChild(parent)
-        if sibling is not None and sibling.tag in self.SIBLING_TAGS and sibling.attrib['style'] == self.list_style:
+        if sibling is not None and (sibling.tag == "ul" or (sibling.tag == "ol" and sibling.attrib['style'] == self.list_style)):
             # Previous block was a list item, so set that as parent
             lst = sibling
             # make sure previous item is in a p- if the item has text,
@@ -84,7 +62,7 @@ class LogikaOListProcessor(OListProcessor):
             self.parser.parseBlocks(li, [firstitem])
             self.parser.state.reset()
 
-        elif parent.tag in ['ol', 'ul'] and parent.attrib['style'] == self.list_style:
+        elif (parent.tag == "ol" and parent.attrib['style'] == self.list_style) or parent.tag=="ul":
             # this catches the edge case of a multi-item indented list whose
             # first item is in a blank parent-list item:
             # * * subitem1
@@ -98,7 +76,8 @@ class LogikaOListProcessor(OListProcessor):
             if not self.LAZY_OL and self.STARTSWITH != '1':
                 lst.attrib['start'] = self.STARTSWITH
 
-        lst.set("style", self.list_style)
+        if self.list_style:
+            lst.set("style", self.list_style)
 
         self.parser.state.set('list')
         # Loop through items in block, recursively parsing each with the
@@ -155,7 +134,10 @@ class LowerAlphaListProcessor(LogikaOListProcessor):
 
     def _set_first_value(self, m):
         starting_letter = self.STARTSWITH_RE.match(m.group(1)).group()
-        self.STARTSWITH = str(string.ascii_lowercase.index(starting_letter) + 1)
+        try:
+            self.STARTSWITH = str(string.ascii_lowercase.index(starting_letter) + 1)
+        except ValueError:
+            self.STARTSWITH = '1'
 
 
 class UpperAlphaListProcessor(LogikaOListProcessor):
@@ -175,7 +157,6 @@ class UpperAlphaListProcessor(LogikaOListProcessor):
 
 class LowerRomanOListProcessor(LogikaOListProcessor):
 
-    SIBLING_TAGS = ['ol']
     LAZY_OL = False
 
     ROMAN_LOWER_RE = re.compile('(m{0,4}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3}))')
@@ -228,13 +209,28 @@ class UpperRomanOListProcessor(LogikaOListProcessor):
         self.STARTSWITH = str(int_val)
     
 
+class LogikaUListProcessor(LogikaOListProcessor):
+
+    TAG = 'ul'
+
+    def __init__(self, parser):
+        super().__init__(parser)
+        self.list_style = None
+        self.RE = re.compile(r'^[ ]{0,%d}(([*+-]))[ ]+(.*)' %
+                                   (self.tab_length - 1))
+        self.CHILD_RE = re.compile(r'^[ ]{0,%d}(([*+-]))[ ]+(.*)' %
+                                   (self.tab_length - 1))
+
+    def _set_first_value(self, m): 
+        return 1
+
 class LogikaListExtension(Extension):
     """ Add sane lists to Markdown. """
 
     def extendMarkdown(self, md):
         """ Override existing Processors. """
         md.parser.blockprocessors.register(LogikaOListProcessor(md.parser), 'olist', 40)
-        md.parser.blockprocessors.register(LogikaUListProcessor(md.parser), 'ulist', 30)
+        md.parser.blockprocessors.register(LogikaUListProcessor(md.parser), 'ulist', 41)
         md.parser.blockprocessors.register(LowerAlphaListProcessor(md.parser), 'loweralphalist', 31)
         md.parser.blockprocessors.register(UpperAlphaListProcessor(md.parser), 'upperalphalist', 31)
         md.parser.blockprocessors.register(LowerRomanOListProcessor(md.parser), 'lowerromanlist', 35)
