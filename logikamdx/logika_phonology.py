@@ -38,7 +38,7 @@ class LogikaPhonologyProcessor(InlineProcessor):
         elif part_m.group(0).strip() == "->":
             arrow = etree.SubElement(parent_element, 'span')
             arrow.set('class', 'phonological-rule-arrow')
-            arrow.text = "&rarr;"
+            arrow.text = "&xrarr;"
         elif part_m.group(0).strip() == "/":
             slash = etree.SubElement(parent_element, 'span')
             slash.set('class', 'phonological-rule-slash')
