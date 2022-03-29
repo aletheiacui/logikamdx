@@ -1,5 +1,5 @@
 """
-Logika Inline Display Extension for Python-Markdown
+Logika Phonology Display Extension for Python-Markdown
 ====================================
 
 Copyright 2022 Philologika LLC
@@ -7,7 +7,6 @@ Copyright 2022 Philologika LLC
 License: [BSD](https://opensource.org/licenses/bsd-license.php)
 """
 
-from xml.sax.handler import feature_string_interning
 from markdown.inlinepatterns import InlineProcessor
 from markdown.extensions import Extension
 import xml.etree.ElementTree as etree
@@ -16,6 +15,7 @@ import re
 class LogikaPhonologyProcessor(InlineProcessor):
 
     PHON_PART = re.compile('^(\s*(\(?\[\[(.*?)\]\])\)?|\s*(->)|\s*(/)|\s*(\_+))')
+    IPA_BRACKETS = re.compile('^[/[].+?[]|/]')
 
     def handleMatch(self, m, data):
         # Create the Element
@@ -55,8 +55,8 @@ class LogikaPhonologyProcessor(InlineProcessor):
             return
 
     def getFeatureMatrix(self, parent_element, features_str):
-        
-        if len(features_str) == 0:
+        features_str = features_str.strip()
+        if len(features_str) == 1 or self.IPA_BRACKETS.match(features_str):
             feature = etree.SubElement(parent_element, 'span')
             feature.set('class', 'feature-matrix-char')
             feature.text = features_str
