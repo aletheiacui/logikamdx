@@ -215,7 +215,7 @@ class LogikaTableProcessor(BlockProcessor):
             
             padding_match = self.RE_ADJUST.match(cell_text)
             padding = ""
-            if padding_match:
+            if padding_match and cell_text.startswith('=='):
                 cell_text = padding_match.group(1)
                 padding = f"padding-left:{padding_match.group(2)}px;"
 
