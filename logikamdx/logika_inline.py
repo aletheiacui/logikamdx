@@ -47,5 +47,6 @@ class LogikaInlineExtension(Extension):
         logika_inline = LogikaInlinePattern(LOGIKA_INLINE_RE)
         md.inlinePatterns['logika_inline'] = logika_inline
 
+
 def makeExtension(**kwargs):
     return LogikaInlineExtension(**kwargs)

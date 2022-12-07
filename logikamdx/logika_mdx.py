@@ -19,5 +19,6 @@ class LogikaExtension(markdown.Extension):
         # Turn on processing of markdown text within raw html
         md.preprocessors['html_block'].markdown_in_raw = True
 
+
 def makeExtension(**kwargs):
     return LogikaExtension(**kwargs)
