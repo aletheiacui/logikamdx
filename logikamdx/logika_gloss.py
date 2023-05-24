@@ -22,7 +22,6 @@ class LogikaGlossProcessor(BlockProcessor):
     RE_ORIGINAL = re.compile('(^\s*\%[Gg]\%)(.+)')
 
     def __init__(self, parser):
-        self.n_words_original = 0
         self.orignal = None
         self.gloss = None
         self.translation = None
@@ -36,6 +35,10 @@ class LogikaGlossProcessor(BlockProcessor):
             gloss
             translation (optional)
         '''
+        self.orignal = None
+        self.gloss = None
+        self.translation = None
+
         rows = [row.strip() for row in block.split('\n')]
         if len(rows) < 2:
             # needs at least rows
