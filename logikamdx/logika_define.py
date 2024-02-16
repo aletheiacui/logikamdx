@@ -1,10 +1,5 @@
 """
 Logika Inline Display Extension for Python-Markdown
-====================================
-
-Copyright 2022 Philologika LLC
-
-License: [BSD](https://opensource.org/licenses/bsd-license.php)
 """
 
 from markdown.inlinepatterns import InlineProcessor
